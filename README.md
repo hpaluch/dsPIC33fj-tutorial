@@ -19,8 +19,8 @@ Required software:
   - Do NOT use v6.05 - it will freeze forever when Master/Slave project
     is associated (not used in this case, but anyway...)
   - Do NOT use v6.10 - it has broken support for PKOB (PicKit on Board
-    programmers) and alos for PicKit 3 - that X IDE version is simply
-    rubbish...
+    programmers) and also for PicKit 3 - that IDE version is simply
+    rubbish (if it was not ill intention - to force people to buy new hardware?).
 
 * XC16 v2.10 
 
@@ -28,12 +28,11 @@ Required software:
 
 Important note:
 
-All MPLAB X IDE projects has 2 configurations:
+All MPLAB X IDE projects have 2 configurations:
 - `default` - used for programming and debugging real Microstick II hardware
 - `Simulator` - running code in software simulator - no hardware required.
 
 Before building and/or Debugging/running please select right configuration in MPLAB X IDE toolbar.
-
 
 ## Tutorial 1 - use FRC oscillator, blink LED in main loop using delay() 
 
@@ -48,10 +47,12 @@ Before building and/or Debugging/running please select right configuration in MP
 
 # Known traps
 
-* MCC Tool does not support dsPIC33FJ series (yes, that's it)
+* MCC Tool does not support dsPIC33FJ series (yes, that's it). So we have
+  to code manually - however we can sometime reuse MCC generated code
+  for similar CPU.
 * PDIP version of dsPIC33FJ does NOT include 2 channel Audio
-  DAC (please see feature matrix on datasheets - it is really
-  that). So we will use PWM + RC filter in future as poor-man
+  DAC (please see feature matrix on datasheet `DS70291G-page 2` - it
+  is really that). So we will use PWM + RC filter in future as poor-man
   DAC.
 
 # Resources
