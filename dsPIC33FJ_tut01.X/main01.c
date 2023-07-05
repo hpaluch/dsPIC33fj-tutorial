@@ -10,8 +10,10 @@
  * 
  * Required hardware:
  * - Microstick II board DM330013-2
- * - dsPIC33FJ128MC802 inserted into socket (included)
+ * Hardware setup:
+ * - dsPIC33FJ128MC802 inserted into socket U5 (included)
  * - programming switch in position A
+ * - LED Jumepr J3 Closed
  * 
  * Required software:
  * - MPLAB X IDE v6.00 - last working version

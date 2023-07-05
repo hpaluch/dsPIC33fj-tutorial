@@ -8,8 +8,9 @@ some time...
 Common required hardware for all projects:
 
 * [Microstick II][PIC Microstick II] board.
-* [dsPIC33FJ128MC802][dsPIC33FJ128MC802] inserted in socket.
+* [dsPIC33FJ128MC802][dsPIC33FJ128MC802] inserted in socket U5
 * Programming switch in position `A`
+* LED Jumper J3 Closed
  
 Required software:
 
@@ -25,20 +26,24 @@ Required software:
 
 # List of projects
 
+## Tutorial 1 - use FRC oscillator, blink LED in main loop using delay() 
+
 * [dsPIC33FJ_tut01.X/](dsPIC33FJ_tut01.X/)
   - Tutorial No. 1
   - PIN10 CLKO- should de f_cy = 7.37/2 MHz = 3.685 MHz
+    - verified on Digilent AD2 scpe:  3.6706 MHz
+    - see also [dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-P10_OSCO.dwf3work](dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-P10_OSCO.dwf3work) - in Digilent WaveForms software
   - PIN2  RA0 - LED blinking with rate 200ms (=5Hz), toggle rate 100ms (10 Hz)
+    - verified on Digilent AD2 scope: f = 4.9811 Hz (200.77 ms)
+    - see also [dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-RA0_LED.dwf3work](dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-P10_OSCO.dwf3work) - in Digilent WaveForms software
 
 # Known traps
 
 * MCC Tool does not support dsPIC33FJ series (yes, that's it)
-* PDIP versio of dsPIC33FJ does NOT include 2 channel Audio
+* PDIP version of dsPIC33FJ does NOT include 2 channel Audio
   DAC (please see feature matrix on datasheets - it is really
   that). So we will use PWM + RC filter in future as poor-man
   DAC.
-
-
 
 # Resources
 

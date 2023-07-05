@@ -1,8 +1,7 @@
 # MPLAB files that use Unix EOL
 Makefile text eol=lf
-
 # use Unix LF even for git files
 README.md text eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
-
+*.dwf3work filter=lfs diff=lfs merge=lfs -text
