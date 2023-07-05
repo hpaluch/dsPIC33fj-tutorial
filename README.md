@@ -30,7 +30,7 @@ Required software:
 
 * [dsPIC33FJ_tut01.X/](dsPIC33FJ_tut01.X/)
   - Tutorial No. 1
-  - PIN10 CLKO- should de f_cy = 7.37/2 MHz = 3.685 MHz
+  - PIN10 CLKO- should be f<sub>cy</sub> = 7.37/2 MHz = 3.685 MHz
     - verified on Digilent AD2 scpe:  3.6706 MHz
     - see also [dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-P10_OSCO.dwf3work](dsPIC33FJ_tut01.X/digilent-ad2/dsPIC33FJ-tut01-P10_OSCO.dwf3work) - in Digilent WaveForms software
   - PIN2  RA0 - LED blinking with rate 200ms (=5Hz), toggle rate 100ms (10 Hz)
