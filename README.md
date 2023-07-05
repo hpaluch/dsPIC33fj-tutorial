@@ -26,6 +26,15 @@ Required software:
 
 # List of projects
 
+Important note:
+
+All MPLAB X IDE projects has 2 configurations:
+- `default` - used for programming and debugging real Microstick II hardware
+- `Simulator` - running code in software simulator - no hardware required.
+
+Before building and/or Debugging/running please select right configuration in MPLAB X IDE toolbar.
+
+
 ## Tutorial 1 - use FRC oscillator, blink LED in main loop using delay() 
 
 * [dsPIC33FJ_tut01.X/](dsPIC33FJ_tut01.X/)
