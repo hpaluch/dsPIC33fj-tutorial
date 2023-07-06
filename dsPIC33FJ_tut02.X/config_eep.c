@@ -34,7 +34,7 @@
 #pragma config POSCMD = NONE            // Primary Oscillator Source (Primary Oscillator Disabled)
 #pragma config OSCIOFNC = OFF           // OSC2 Pin Function (OSC2 pin has clock out function)
 #pragma config IOL1WAY = ON             // Peripheral Pin Select Configuration (Allow Only One Re-configuration)
-#pragma config FCKSM = CSDCMD           // Clock Switching and Monitor (Both Clock Switching and Fail-Safe Clock Monitor are disabled)
+#pragma config FCKSM = CSECMD           // Clock Switching and Monitor (Clock switching is enabled, Fail-Safe Clock Monitor is disabled)
 
 // FWDT
 #pragma config WDTPOST = PS32768        // Watchdog Timer Postscaler (1:32,768)
