@@ -35,8 +35,8 @@
 
 int main(void) {
     // RA0 - LED OUTPUT
-    LATAbits.LATA0 = 0; // LED OFF
-    TRISAbits.TRISA0 = 0; // RA1 is now output
+    LATAbits.LATA0 = 0; // RA0 LED OFF - store value in Latch
+    TRISAbits.TRISA0 = 0; // RA0 LED is now output
     while(1){
         __delay_ms(100); // wait 100ms
         LATAbits.LATA0 ^= 1; // toggle LED at rate 100ms (10Hz),
