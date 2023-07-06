@@ -65,7 +65,7 @@ PLL notes:
 - on DS70596A-page 48-27, Example 48-2
 - equation for PLL is (for M=43, N1=2, N2=2): `f_osc = f_in * M / N1 / N2 = 7.36 * 43 / 2 / 2 = 79.12 MHz`, or:
 
-  $$ f_{osc} = f_{in} \times \frac{ M }{ N1 \times N2 } = f_{in} \times M / N1 / N2 = 7.36 \times 43 / 2 / 2 = 79.12 \text{MHz} $$
+  $$ f_{osc} = f_{in} \times \frac{ M }{ N1 \times N2 } = f_{in} \times M / N1 / N2 = 7.36 \times 43 / 2 / 2 = 79.12 \\,\text{MHz} $$
 
 - so we are a bit under wanted 80.00 MHz, because using higher M=44 would yield 80.96 MHz,
   which is overclocked over maximum 80.00 MHz.
