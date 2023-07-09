@@ -80,6 +80,116 @@ PLL notes:
   is really that). So we will use PWM + RC filter in future as poor-man
   DAC.
 
+# ADC Resources
+
+Most important - MPLAB starter kit for dsPIC (I don't have one, but there are important
+docs and code examples):
+
+- https://www.microchip.com/en-us/development-tool/dm330011
+- User Guide: https://ww1.microchip.com/downloads/en/DeviceDoc/51700B.pdf
+
+More theory on ADC and anti-aliasing (to prevent high frequency to appear as
+parasitic low frequency - aliasing, there is needed low-pass filter):
+
+- [AN699 Anti-Aliasing, Analog Filters for Data Acquisition Systems](https://ww1.microchip.com/downloads/en/Appnotes/00699b.pdf) - quite good
+- [ADN003 Select the Right Operational Amplifier for your Filtering Circuits](https://ww1.microchip.com/downloads/en/DeviceDoc/adn003.pdf) not much detail...
+
+From above User Guide (51700B.pdf) we know that on ADC input there is 
+
+> This sixth-order Sallen-Key low-pass filter has a cut-off frequency of 3300 Hz.
+> The output of the anti-aliasing filter is connected to input AN0 of the ADC module on the device.
+
+From source https://ww1.microchip.com/downloads/en/DeviceDoc/SASK%20Record%20Play%20Demo%20With%20Intro.zip 
+We can find:
+
+```c
+// SASK Record Play Demo With Intro/h/ADCChannelDrv.h
+#define ADC_CHANNEL_FCY	40000000
+#define ADC_FSAMP	8000	/* Sampling Frequency	*/
+
+#define ADCON1VAL 0x0744  /* 12 bit ADC with signed fractional format
+		     	  * Triggered by Timer 3 and auto start 
+		   	  * sampling after conversion complete. */
+#define ADCON2VAL 0x0000  /* AVdd and AVss voltage reference, 
+		   	  * use channel 0 with no scan	*/
+#define ADCON3VAL 0x0010  /* Tad is 16 Tcy				*/     
+#define ADCHSVAL  0x0000  /* AN0 input on channel 0		*/	  
+#define ADPCFGVAL 0xFFFE  /* AN0 input is Analog			*/
+#define ADCSSLVAL 0x0000  /* No channel scanning			*/
+
+// src/ADCChannelDrv.c
+void ADCChannelInit	(ADCChannelHandle * pHandle,int * pBufferInDMA)
+{
+// ...
+	AD1CON1 	= ADCON1VAL;    /* Load the ADC registers with  value 	*/
+	AD1CON2 	= ADCON2VAL;    /* specified in 12bitADCDriver.h	*/
+	AD1CON3 	= ADCON3VAL;
+	AD1CHS0 	= ADCHSVAL;
+	AD1PCFGLbits.PCFG0 = 0;
+	AD1CSSL 	= ADCSSLVAL;
+
+	TMR3 		= 0;
+	PR3		= (ADC_CHANNEL_FCY/ADC_FSAMP) - 1;
+}
+
+```
+
+So filter cut-off is 3_300 Hz (3 kHz) and ADC sample rate is 8_000 Hz (8 kHz)
+
+
+# PWM DAC Resources
+
+
+From above User Guide (51700B.pdf) we know that on PWM output there is connected 
+low-pass filter:
+
+> The PWM signal from the Output Compare module on the dsPIC33FJ256GP506
+> device on the board is demodulated by the PWM low-pass filter (A4). This fourth-order
+> filter uses two Op amps (U8:A and U8:B) on the MCP6022 quad Op amp IC.
+
+But there are no more details (for example one important - cut-off frequency)
+
+From source  we can find:
+
+```c
+// SASK Record Play Demo With Intro/h/OCPWMDrv.h
+#define OCPWM_FCY	40000000
+#define OCPWM_FPWM	64000
+#define OCPWM_FSAMP	8000	/* Sampling Frequency	*/
+#define OCPWM_FPWM_FSAMP_RATIO 	(OCPWM_FPWM/OCPWM_FSAMP)
+#define OCPWM_TMRPRESCALE 			1
+#define OCPWM_MAX_PWM_PERIOD	(((OCPWM_FCY/OCPWM_FPWM)*OCPWM_TMRPRESCALE) - 1)
+
+// c
+
+void OCPWMStart	(OCPWMHandle * pHandle)
+{
+//...
+PR2	= OCPWM_MAX_PWM_PERIOD;		/* PWM Period			*/
+OC1RS	= ((OCPWM_MAX_PWM_PERIOD)/2);	/* Initial Duty Cycle at 50% 	*/
+OC1R	= ((OCPWM_MAX_PWM_PERIOD)/2);
+OC1CON	= OCPWM_OCCON_WORD;		/* Turn module on		*/
+// ...
+}
+
+// how is Duty cycle computed
+#define OCPWM_HIGHEST_INPUT_VALUE	32767
+#define OCPWM_LOWEST_INPUT_VALUE	-32768
+#define OCPWM_INPUT_RANGE	(OCPWM_HIGHEST_INPUT_VALUE - (OCPWM_LOWEST_INPUT_VALUE))
+
+unsigned int sample;
+unsigned int pwmDutyCycle;
+
+	/* Compute Duty cycle values for every input sample	*/
+	sample = data[i] - (OCPWM_LOWEST_INPUT_VALUE);
+	pwmDutyCycle = ((sample * OCPWM_MAX_PWM_PERIOD))/OCPWM_INPUT_RANGE;
+	// the pwmDutyCycle has enforced boundaries:
+	// 	minimum pwmDutyCycle = 1
+	// 	maximum pwmDutyCycle =  OCPWM_MAX_PWM_PERIOD - 1
+```
+So it seems that PWM period (or freq) is 64 000 Hz (64 kHz). So for each sample
+(at 8 kHz) there are 8 PWM periods on output.
+
 # Resources
 
 * My old int dsPIC33FJ intro project on GitHub - based on Microchip
