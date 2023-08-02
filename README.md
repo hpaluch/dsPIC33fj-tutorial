@@ -70,6 +70,32 @@ PLL notes:
 - so we are a bit under wanted 80.00 MHz, because using higher M=44 would yield 80.96 MHz,
   which is overclocked over maximum 80.00 MHz.
 
+ 
+## Tutorial 3 - requisites for ADC and PWM as DAC
+
+For real DSP example we need signal input and output.
+
+For input we need:
+- anti-alias filter, to filter frequencies above fs/2 (they would appear
+  as parasitic low frequencies - called "aliasing")
+  - [AN699 Anti-Aliasing, Analog Filters for Data Acquisition Systems](https://ww1.microchip.com/downloads/en/Appnotes/00699b.pdf) - quite good
+- ADC (included on dsPIC33FJ)
+
+For output we need:
+- PWM (there is no DAC on PDIP version of dspIC33FJ)
+- low-pass output filter - to filter out PWM base frequency and harmonics
+  - [AN538 Using PWM to Generate Analog Output](https://ww1.microchip.com/downloads/en/AppNotes/00538c.pdf)
+
+In both cases we may need FilterLab program:
+- example: https://microchipdeveloper.com/asp0107:filter-design-example
+
+Example for both at speech processing sample frequency (fs = 8kHz) is on
+- [DM330011: MPLAB STARTER KIT FOR DSPIC DSCS](https://www.microchip.com/en-us/development-tool/dm330011)
+- WARNING! Above URL was removed without notice. However we can still find
+  at least data sheet, etc.:
+- manual: https://ww1.microchip.com/downloads/en/DeviceDoc/51700B.pdf
+
+
 # Known traps
 
 * MCC Tool does not support dsPIC33FJ series (yes, that's it). So we have
@@ -139,6 +165,9 @@ So filter cut-off is 3_300 Hz (3 kHz) and ADC sample rate is 8_000 Hz (8 kHz)
 
 # PWM DAC Resources
 
+Related application notes:
+- `AN538 Using PWM to Generate Analog Output`
+- https://ww1.microchip.com/downloads/en/AppNotes/00538c.pdf
 
 From above User Guide (51700B.pdf) we know that on PWM output there is connected 
 low-pass filter:
@@ -146,6 +175,8 @@ low-pass filter:
 > The PWM signal from the Output Compare module on the dsPIC33FJ256GP506
 > device on the board is demodulated by the PWM low-pass filter (A4). This fourth-order
 > filter uses two Op amps (U8:A and U8:B) on the MCP6022 quad Op amp IC.
+
+
 
 But there are no more details (for example one important - cut-off frequency)
 
