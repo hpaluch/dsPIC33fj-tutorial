@@ -9,9 +9,9 @@
  * - switch oscillator from f_osc = 7.37 MHz to max 79.12 MHz (39.56 MIPS) using PLL
  * - PIN10 CLKO- should de f_cy = 79.12/2 MHz = 39.56 MHz
  * - PIN2  RA0 - LED blinking with rate 200ms (=5Hz), toggle rate 100ms (10 Hz)
- * - PIN3 Timer2 overflow, Toggle at 79.12/256 = 309 kHz, Frequency = 154.5 kHz
+ * - PIN3 Timer2 overflow, Toggle f_cy/256 = 39.56/256 = 154.53 kHz, Frequency = 77.27 kHz
  * - PIN4 & 5 = reserved for programming debugging
- * - PIN6 RB2,RP2: OC1 - PWM with frequency 309 kHz, and duty 25%
+ * - PIN6 RB2,RP2: OC1 - PWM with frequency 154.53 kHz, and duty 25%
  * We use standard OC Output Compare for PWM. However it is too slow
  * for good DAC output
  * 
@@ -74,10 +74,10 @@ void PWM_Initialize(void)
 }
 
 /* Timer 2 ISR - used as Timer base for PWM */
-// Interrupt rate should be fCY/(PR2+1) 79.12/256 = 309 kHz
+// Interrupt rate should be fCY/(PR2+1) 39.56/256 = 154.53 kHz
 void __attribute__((__interrupt__,auto_psv)) _T2Interrupt( void )
 {
-    LATAbits.LATA1 ^= 1; // toggle RA1 PIN3 on timer overflow
+    LATAbits.LATA1 ^= 1; // toggle RA1 PIN3 on timer overflow, f= 154.53/2=
     // OC1RS = 300; // Write Duty Cycle value for next PWM cycle
     IFS0bits.T2IF = 0; // Clear Timer 2 interrupt flag
 }
@@ -95,7 +95,7 @@ int main(void) {
     LATA = 0; // by default everything low on PORTA
     TRISA = ~ (_TRISA_TRISA0_MASK|_TRISA_TRISA1_MASK); // RA0 and RA1 are outputs
     PPS_Initialize();
-    // switch clock from FRC 7.37 MHz to FRC+PLL at 79.12 MHz
+    // switch clock from FRC 7.37 MHz to FRC+PLL at 79.12 MHz, f_cy = 39.56 MHz (40 MIPS)
     CLOCK_Initialize();
     PWM_Initialize();
     // now we can use __delay_us() and __delay_ms())

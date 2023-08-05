@@ -72,15 +72,40 @@ PLL notes:
 
 ## Tutorial 3 - Using OC PWM as DAC
 
-Here we will use Output Compare (OC) module (standard since
+Here we will use Output Compare 1 (OC1) module (standard since
 8-bit PIC) for "slow" PWM (we will later use MC motor control PWM
-for much faster results).
+for much faster results). PWM is set to fixed 25% duty - to verify that
+it works as expected. PWM Resolution is 8-bit limited by TMR2 period which is set to 256.
 
 * [dsPIC33FJ_tut03.X/](dsPIC33FJ_tut03.X/)
 
+Existing features (from previous tutorial):
+* PIN10 CLKO - should de f<sub>cy</sub> = 79.12/2 MHz = 39.56 MHz
+* PIN2  RA0 - LED blinking with rate 200ms (=5Hz), toggle rate 100ms (10 Hz)
+* PIN4 & 5 = reserved for programming debugging
 
+Additional features:
+* PIN3 Timer2 overflow, Toggle f<sub>cy</sub>/256 = 39.56/256 = 154.53 kHz, Frequency = 77.27 kHz
+  Timer2 (TMR2) is used as time base for Output Compare 1 (OC1) PWM
+* PIN6 RB2,RP2: OC1 - PWM with frequency 154.53 kHz, and Fixed duty 25%
+
+WARNING! Measured values are slightly lower:
+- expected TMR2 freq 77.27 kHz
+- got 77.024 kHz
+- error: -0.3%
+Which corresponds to clock error (see previous tutorial)
+
+Here are measurements using `Digilent Analog Discovery 2` scope and
+software WaveForms v3.20.1:
+
+![Tutorial 3 - OC1 PWM 25%](dsPIC33FJ_tut03.X/digilent-ad2/dsPIC33FJ-TUT3-PWM2-duty25pct.png)
+
+And here is workspace file: (dsPIC33FJ_tut03.X/digilent-ad2/dsPIC33FJ-TUT03.dwf3work](dsPIC33FJ_tut03.X/digilent-ad2/dsPIC33FJ-TUT03.dwf3work]) for WaveForms software.
+
+
+# Below are future tutorials - work in progress
  
-## Tutorial 3 - requisites for ADC and PWM as DAC
+## Tutorial 4+ - requisites for ADC and PWM as DAC
 
 For real DSP example we need signal input and output.
 
