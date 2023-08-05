@@ -102,6 +102,46 @@ software WaveForms v3.20.1:
 
 And here is workspace file: (dsPIC33FJ_tut03.X/digilent-ad2/dsPIC33FJ-TUT03.dwf3work](dsPIC33FJ_tut03.X/digilent-ad2/dsPIC33FJ-TUT03.dwf3work]) for WaveForms software.
 
+## Tutorial 4 - Using OC PWM and RC filter
+
+In this stage we will generate PWM signal chainsaw `/|/|/|` and we will
+use simple low-pass RC filter to convert PWM pulses to Voltage levels:
+
+```
+                    4700 Ohm
+                  +-------+
+PIN6 PWM OC1  >---|   R   |---+---- Analog Output: /|/|/|
+                  +-------+   |
+                             === C=10 nF
+                              |
+                             GND
+```
+
+Please see https://ww1.microchip.com/downloads/en/AppNotes/00538c.pdf
+(However I used R=4k7 instead of R=4k because lack of suitable parts).
+
+```
+RC=1/(2*PI*f)
+
+f*RC = 1/(2*PI)
+
+f [Hz] = 1/(2*PI*R*C)
+
+f [Hz] = 1/(2*3.14*4700* 1.0E-8) = 1/ ( 2 * 3.14 * 4.7 * 1.0E-5 ) =
+f [kHz] = 1 / (2 * 3.14 * 4.7 * 1.0E-2) = 1 / 2 * 3.14 * 4.7 * 0.01 ) = 
+f_cutoff = 3.388 kHz
+```
+
+Chainsaw frequency is TMR2 frequency / PWM period = 154.53 / 256 = 603.64 Hz
+
+Please note that down slope is not perfect because capacitor takes some time to discharge.
+However it can't too low otherwise it will not flatten PWM pulses well. It is always compromise.
+
+![PWM Chainsaw output](dsPIC33FJ_tut04.X/digilent-ad2/dsPIC33FJ-TUT3-PWM-chainsaw.png)
+
+Workspace for Digilent WaveForms software: [dsPIC33FJ_tut04.X/digilent-ad2/dsPIC33FJ-TUT04-chainsaw.dwf3work](dsPIC33FJ_tut04.X/digilent-ad2/dsPIC33FJ-TUT04-chainsaw.dwf3work)
+
+
 
 # Below are future tutorials - work in progress
  

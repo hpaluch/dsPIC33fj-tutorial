@@ -1,19 +1,32 @@
 /*
- * File:   main03.c
+ * File:   main04.c
  * Author: Henryk Paluch
  * Created on July 6, 2023
  * Description:
  * Tutorial No. 3 for dsPIC33FJ and Microstick II board.
- *   Using standard (slow) Output Compare (OC) Timer2 for PWM
+ *   Using standard (slow) Output Compare (OC) Timer2 for PWM.
+ *   Produce simple Chainsaw output: /|/|/|/|
  * Functions:
  * - switch oscillator from f_osc = 7.37 MHz to max 79.12 MHz (39.56 MIPS) using PLL
  * - PIN10 CLKO- should de f_cy = 79.12/2 MHz = 39.56 MHz
  * - PIN2  RA0 - LED blinking with rate 200ms (=5Hz), toggle rate 100ms (10 Hz)
  * - PIN3 Timer2 overflow, Toggle f_cy/256 = 39.56/256 = 154.53 kHz, Frequency = 77.27 kHz
  * - PIN4 & 5 = reserved for programming debugging
- * - PIN6 RB2,RP2: OC1 - PWM with frequency 154.53 kHz, and duty 25%
+ * - PIN6 RB2,RP2: OC1 - PWM with frequency 154.53 kHz, and variable duty - chainsaw
  * We use standard OC Output Compare for PWM. However it is too slow
  * for good DAC output
+ * 
+ * For Analog output you have to connect RC low-pass filter to PIN6.
+ * 
+ *                       +-----+
+ * PIN6 OC1_PWM_OUT >----|  R  |---+----> Analog Out
+ *                       +-----+   |
+ *                                === C
+ *                                 |
+ *                                 V GND
+ * 
+ * Used R=4k7, C=10nF => f cutoff = 3.78 kHz
+ * Modified from https://ww1.microchip.com/downloads/en/AppNotes/00538c.pdf
  * 
  * Required hardware:
  * - Microstick II board DM330013-2
@@ -46,7 +59,7 @@
 #define u16 uint16_t
 
 #define HP_PWM_PERIOD 256U // 8-bit PWM resolution
-#define HP_PWM_DUTY   HP_PWM_PERIOD/4U  // 25%
+#define HP_PWM_INIT_DUTY 0
 
 // Initialize PWM (our future "DAC")
 void PWM_Initialize(void)
@@ -54,10 +67,10 @@ void PWM_Initialize(void)
     // mostly Copy & Paste from DS70209A-page 13-17
     // Initialize Output Compare Module
     OC1CONbits.OCM = 0b000; // Disable Output Compare Module
-    OC1R = HP_PWM_DUTY; // Write the duty cycle for the first PWM pulse
-    OC1RS = HP_PWM_DUTY; // Write the duty cycle for the second PWM pulse
+    OC1R = HP_PWM_INIT_DUTY; // Write the duty cycle for the first PWM pulse
+    OC1RS = HP_PWM_INIT_DUTY; // Write the duty cycle for the second PWM pulse
     OC1CONbits.OCTSEL = 0; // Select Timer 2 as output compare time base
-    OC1R = HP_PWM_DUTY; // Load the Compare Register Value
+    OC1R = HP_PWM_INIT_DUTY; // Load the Compare Register Value
     OC1CONbits.OCM = 0b110; // Select the Output Compare mode 
   
     // Initialize and enable Timer2 that is used as Timer base for PWM
@@ -78,11 +91,11 @@ void PWM_Initialize(void)
 void __attribute__((__interrupt__,auto_psv)) _T2Interrupt( void )
 {
     LATAbits.LATA1 ^= 1; // toggle RA1 PIN3 on timer overflow, f= 154.53/2=
-    // OC1RS = 300; // Write Duty Cycle value for next PWM cycle
+    OC1RS = (OC1RS+1) % HP_PWM_PERIOD; // generate trivial chainsaw /|/|/|
     IFS0bits.T2IF = 0; // Clear Timer 2 interrupt flag
 }
 
-// Peripheral Pin Select - Remap Pins for PWM
+// Peripheral Pin Select - Remap Pin6 RB2, RP2 for PWM
 void PPS_Initialize(void)
 {
     __builtin_write_OSCCONL(OSCCON & ~_OSCCON_IOLOCK_MASK); // unlock PPS
