@@ -70,6 +70,15 @@ PLL notes:
 - so we are a bit under wanted 80.00 MHz, because using higher M=44 would yield 80.96 MHz,
   which is overclocked over maximum 80.00 MHz.
 
+## Tutorial 3 - Using OC PWM as DAC
+
+Here we will use Output Compare (OC) module (standard since
+8-bit PIC) for "slow" PWM (we will later use MC motor control PWM
+for much faster results).
+
+* [dsPIC33FJ_tut03.X/](dsPIC33FJ_tut03.X/)
+
+
  
 ## Tutorial 3 - requisites for ADC and PWM as DAC
 
